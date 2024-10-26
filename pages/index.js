@@ -1,115 +1,209 @@
-import Image from "next/image";
-import localFont from "next/font/local";
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import myPhoto from '../public/myphoto.png';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import emailjs from 'emailjs-com'; 
+import { useState } from 'react';
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const fadeInVariant = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+};
+
+const typingAnimation = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 1,
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const letterVariant = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [responseMsg, setResponseMsg] = useState('');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const sendEmail = (e) => {
+    e.preventDefault(); 
+
+    emailjs.send('service_l4h7zyl', 'template_7znorlm', formData, 'FWZ7WJiTnDt8XDE3x')
+      .then((response) => {
+        console.log('SUCCESS!', response.status, response.text);
+        setResponseMsg('Message sent successfully!');
+      })
+      .catch((err) => {
+        console.error('FAILED...', err);
+        setResponseMsg('Failed to send message. Please try again later.');
+      });
+
+    setFormData({ name: '', email: '', message: '' });
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center text-white overflow-y-scroll no-scrollbar">
+      
+      {/* Transparent Navigation Bar */}
+      <nav className="w-full flex justify-center items-center p-6 bg-transparent fixed bottom-0 z-10 opacity-80 rounded-lg">
+        <div className="flex space-x-6 md:space-x-12">
+          <a href="#home" className="hover:text-gray-400 fa-xl">
+            <i className="fas fa-home"></i>
+           
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+          <a href="#skills" className="hover:text-gray-400 fa-xl">
+            <i className="fas fa-cogs"></i>
+          </a>
+          <a href="#experience" className="hover:text-gray-400 fa-xl">
+            <i className="fas fa-briefcase"></i>
+          </a>
+          <a href="#projects" className="hover:text-gray-400 fa-xl">
+            <i className="fas fa-folder"></i>
+          </a>
+          <a href="#contact" className="hover:text-gray-400 fa-xl">
+            <i className="fas fa-envelope"></i>
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
-}
+      </nav>
+
+      {/* Home Section */}
+      <motion.section
+        id="home"
+        className="h-screen flex items-center justify-center text-center px-4"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeInVariant}
+      >
+        <motion.div className="bg-transparent bg-opacity-0 rounded-xl p-10 backdrop-blur-md shadow-sm max-w-6xl w-full flex flex-col lg:flex-row items-center">
+          {/* Text Section */}
+          <div className="flex-1 mb-6 lg:mb-0 lg:text-left">
+            <motion.h2
+              className="text-4xl font-bold mb-4"
+              variants={typingAnimation}
+              initial="hidden"
+              animate="visible"
+            >
+              {Array.from("Hi, I'm Chamindu Kavishka").map((letter, index) => (
+                <motion.span key={index} variants={letterVariant}>
+                  {letter}
+                </motion.span>
+              ))}
+            </motion.h2>
+            <p className="text-lg mb-4">
+              I am a third-year undergraduate in Software Engineering, passionate about solving problems with innovative solutions and dedicated to continuous learning in the field.
+            </p>
+            {/* Download Resume Button */}
+            <a
+              href="/Chamindu_Kavishka_Resume.pdf"
+              download
+              className="bg-green-500 text-black px-4 py-2 rounded-full hover:bg-blue-600"
+            >
+              Download Resume
+            </a>
+          </div>
+          {/* Image Section */}
+          <div className="relative w-40 h-40 md:w-56 md:h-56 lg:w-64 lg:h-64 flex-shrink-0">
+            <Image
+              src={myPhoto}
+              alt="My Photo"
+              layout="fill"
+              objectFit="cover"
+              className="rounded-full"
+            />
+            <div className="absolute w-full h-full rounded-full border-4 border-dashed border-blue-500 animate-spin-slow"></div>
+          </div>
+        </motion.div>
+      </motion.section>
+      
+      {/* Skills Section */}
+<motion.section
+  id="skills"
+  className="h-screen flex flex-col justify-center items-center"
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+  variants={fadeInVariant}
+>
+  <h2 className="text-3xl font-bold mb-4">Skills</h2>
+  <p className="text-lg max-w-xl text-center">
+    Web Design, MS Office, PHP, Laravel, HTML & CSS, Python, JavaScript, WordPress, Database Management, Next.js, React.js, API Integration
+  </p>
+</motion.section>
+
+      {/* Experience Section */}
+      <motion.section
+        id="experience"
+        className="h-screen flex flex-col justify-center items-center"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeInVariant}
+      >
+        <h2 className="text-3xl font-bold mb-4">Experience</h2>
+        <p className="text-lg max-w-xl text-center">
+          <strong>Phone Repair Technician, Cell Hub Mobile (2022 - 2024)</strong><br />
+          Two years of experience in diagnosing and repairing mobile devices, with expertise in hardware repairs and customer service.
+        </p>
+      </motion.section>
+
+      {/* Projects Section */}
+<motion.section
+  id="projects"
+  className="h-screen flex flex-col justify-center items-center"
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+  variants={fadeInVariant}
+>
+  <h2 className="text-3xl font-bold mb-4">Projects</h2>
+  <p className="text-lg max-w-xl text-center">
+    <strong>POS System Development</strong><br />
+    Developed a POS system with real-time stock updates, payment gateways, and secure authentication using Laravel.
+  </p>
+  <p className="text-lg max-w-xl text-center">
+    <strong>Pet Shop Frontend Development</strong><br />
+    Created a user-friendly frontend for a pet shop using Next.js, featuring dynamic product listings, a shopping cart, and responsive design for optimal viewing across devices.
+  </p>
+</motion.section>
+
+           {/* Contact Section */}
+           <motion.section
+           id="contact"
+           className="h-screen flex flex-col items-center justify-center"
+           initial="hidden"
+           whileInView="visible"
+           viewport={{ once: true }}
+           variants={fadeInVariant}
+         >
+           <h2 className="text-3xl font-bold mb-4">Contact Me</h2>
+           <form onSubmit={sendEmail} className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+             <div className="mb-4">
+               <label className="block mb-2" htmlFor="name">Name</label>
+               <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="w-full p-2 bg-gray-700 text-white rounded" required />
+             </div>
+             <div className="mb-4">
+               <label className="block mb-2" htmlFor="email">Email</label>
+               <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-2 bg-gray-700 text-white rounded" required />
+             </div>
+             <div className="mb-4">
+               <label className="block mb-2" htmlFor="message">Message</label>
+               <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows="4" className="w-full p-2 bg-gray-700 text-white rounded" required></textarea>
+             </div>
+             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Send Message</button>
+           </form>
+           {responseMsg && <p className="mt-4 text-green-500">{responseMsg}</p>} {/* Display response message */}
+         </motion.section>
+       </div>
+     );
+   }
